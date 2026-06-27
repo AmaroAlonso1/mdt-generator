@@ -312,7 +312,9 @@
                 relato += `una vez llegado, los oficiales se posicionarían de manera estratégica para hacer ingreso a la zona en las cercanías de ${cp}, al ingresar comenzaría un tiroteo que terminaría con un 10-99 al acabar con todos los sujetos abatidos. `;
             }
 
-            // Cierre único y correcto
+            relato += `se solicitaría 10-38 en lo que EMS acudiría en helicóptero a la zona, reanimaría a los sujetos, se les leería sus derechos y serían trasladados para cumplir su condena\位`;
+
+            // Cierre
             relato += `se solicitaría 10-38 en lo que EMS acudiría en helicóptero a la zona, reanimaría a los sujetos, se les leería sus derechos y serían trasladados para cumplir su condena\``;
 
             document.getElementById('resultado').value = texto + relato;
