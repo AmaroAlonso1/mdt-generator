@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDT - BCSO</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://s3-screenshots.int-cdn.lcpdfrusercontent.com/monthly_2017_05/271590_20170516200242_1.png.6bd982f3b6b52ccf6802b7675cf4b985.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #dcddde;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: rgba(47, 49, 54, 0.90);
+            backdrop-filter: blur(8px);
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            color: #ffffff;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #202225;
+            background-color: #40444b;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #5865F2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #4752C4;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            background-color: #202225;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #18191c;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background-color: transparent;
+            color: #dcddde;
+            border: none;
+            resize: none;
+            font-family: monospace;
+            outline: none;
+        }
+
+        .copy-btn {
+            background-color: #3ba55c;
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background-color: #2d7d46;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>MDT - Generador de Bitácoras</h2>
+
+        <!-- Datos Base -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>Fecha:</label>
+                <input type="date" id="fecha">
+            </div>
+            <div class="form-group">
+                <label>Nro de casillero:</label>
+                <input type="text" id="casillero" placeholder="Ej: 5433" value="">
+            </div>
+        </div>
+
+        <hr style="border-color: #40444b; margin: 20px 0;">
+
+        <!-- Tipo de Procedimiento -->
+        <div class="form-group">
+            <label>Tipo de Procedimiento:</label>
+            <select id="tipo_procedimiento" onchange="actualizarFormulario()">
+                <option value="robo">Robo a Establecimiento</option>
+                <option value="zona_roja">Zona Roja</option>
+            </select>
+        </div>
+
+        <!-- Parámetros del Reporte -->
+        <div class="form-group">
+            <label>Robo a Establecimiento / Acción de ZR:</label>
+            <input type="text" id="delito" placeholder="Ej: Ammu-Nation / proceso de sustancias ilicitas" value="">
+        </div>
+
+        <div class="form-group" id="grupo_negociacion">
+            <label>Términos de Negociación (Solo para robos):</label>
+            <input type="text" id="negociacion" value="salida íntegra">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Sujetos (1-20):</label>
+                <!-- Validación JS para máximo 20 -->
+                <input type="text" id="cantidad" placeholder="Ej: 3" oninput="validarSujetos(this)">
+            </div>
+            <div class="form-group">
+                <label>Calibre:</label>
+                <select id="calibre">
+                    <option value="bajo" selected>Bajo</option>
+                    <option value="medio">Medio</option>
+                    <option value="alto">Alto</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Vestimenta (Color):</label>
+            <!-- Validación para solo letras y límite de 30 caracteres -->
+            <input type="text" id="vestimenta" maxlength="30" placeholder="Ej: anaranjado y violeta"
+                oninput="validarLetras(this)">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Vehículo:</label>
+                <input type="text" id="vehiculo" placeholder="Ej: 2 Caracaras" value="">
+            </div>
+            <div class="form-group">
+                <label>Color del Vehículo:</label>
+                <!-- Validación para solo letras y límite de 25 caracteres -->
+                <input type="text" id="color_vehiculo" maxlength="25" placeholder="Ej: Negra"
+                    oninput="validarLetras(this)">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Código Postal (CP):</label>
+            <!-- Validación para solo números y límite de 6 caracteres -->
+            <input type="text" id="codigo_postal" maxlength="6" placeholder="Ej: 4010" oninput="validarNumeros(this)">
+        </div>
+
+        <button onclick="generarBitacora()">Generar Bitácora</button>
+
+        <!-- Resultado -->
+        <div class="result-box">
+            <textarea id="resultado" readonly placeholder="La bitácora generada aparecerá aquí..."></textarea>
+            <button class="copy-btn" onclick="copiarTexto()">Copiar para Discord</button>
+        </div>
+    </div>
+
+    <script>
+        // Establecer la fecha de la computadora al abrir
+        window.onload = function () {
+            const hoy = new Date();
+            const año = hoy.getFullYear();
+            const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+            const dia = String(hoy.getDate()).padStart(2, '0');
+            document.getElementById('fecha').value = `${año}-${mes}-${dia}`;
+            actualizarFormulario();
+        };
+
+        // ------------- FUNCIONES DE VALIDACIÓN -------------
+
+        // Permite solo letras y espacios
+        function validarLetras(input) {
+            input.value = input.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+        }
+
+        // Permite solo números
+        function validarNumeros(input) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+
+        // Permite solo números y limita el valor entre 1 y 20
+        function validarSujetos(input) {
+            // Primero eliminamos cualquier letra o símbolo
+            input.value = input.value.replace(/[^0-9]/g, '');
+
+            if (input.value !== '') {
+                let valor = parseInt(input.value);
+                // Si el usuario escribe algo mayor a 20, lo bajamos a 20
+                if (valor > 20) {
+                    input.value = 20;
+                }
+                // (No forzamos a 1 automáticamente mientras escribe para permitir borrar el campo)
+            }
+        }
+
+        // ---------------------------------------------------
+
+        // Mostrar/Ocultar el campo de negociación según el tipo de procedimiento
+        function actualizarFormulario() {
+            let tipo = document.getElementById('tipo_procedimiento').value;
+            let grupoNegociacion = document.getElementById('grupo_negociacion');
+
+            if (tipo === 'robo') {
+                grupoNegociacion.style.display = 'block';
+            } else {
+                grupoNegociacion.style.display = 'none';
+            }
+        }
+
+        function generarBitacora() {
+            // Fecha
+            let fechaInput = document.getElementById('fecha').value;
+            let fechaPartes = fechaInput.split('-');
+            let fechaFormateada = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`;
+
+            // Datos
+            let casillero = document.getElementById('casillero').value;
+            let tipo = document.getElementById('tipo_procedimiento').value;
+            let delito = document.getElementById('delito').value;
+            let negociacion = document.getElementById('negociacion').value;
+            let cantidad = document.getElementById('cantidad').value || "1"; // Valor por defecto por si lo dejan vacío
+            let calibre = document.getElementById('calibre').value;
+            let vestimenta = document.getElementById('vestimenta').value;
+            let vehiculo = document.getElementById('vehiculo').value;
+            let colorVehiculo = document.getElementById('color_vehiculo').value;
+            let cp = document.getElementById('codigo_postal').value;
+
+            // Estructura Base (El campo de BCSO involucrados queda vacío intencionalmente)
+            let texto = `Fecha: ${fechaFormateada}\nBCSO involucrados: \nNro de casillero: ${casillero}\n\nResumen de procedimiento:\n\n`;
+
+            // Inicio del relato
+            let relato = `\`Llegaría un llamado sobre ${cantidad} sujeto/s, quienes estarían realizando ${delito}, estos vestirían de ${vestimenta}, portarían ${calibre} calibre y se transportarían en ${vehiculo} color ${colorVehiculo}, Mando ordenaría a los oficiales acudir de manera inmediata a la zona. `;
+
+            // Desarrollo dependiente del procedimiento
+            if (tipo === 'robo') {
+                relato += `una vez llegado, se procedería a entablar negociaciones, las cuales terminarían con ${negociacion}, tras varios minutos de procedimiento, este terminaría con un 10-99 en las cercanías de la postal ${cp}, al haber abatido a la totalidad de sujetos. `;
+            } else if (tipo === 'zona_roja') {
+                relato += `una vez llegado, los oficiales se posicionarían de manera estratégica para hacer ingreso a la zona en las cercanías de ${cp}, al ingresar comenzaría un tiroteo que terminaría con un 10-99 al acabar con todos los sujetos abatidos. `;
+            }
+
+            // Cierre
+            relato += `se solicitaría 10-38 en lo que EMS acudiría en helicóptero a la zona, reanimaría a los sujetos, se les leería sus derechos y serían trasladados para cumplir su condena\``;
+
+            // Unir todo
+            document.getElementById('resultado').value = texto + relato;
+        }
+
+        function copiarTexto() {
+            let texto = document.getElementById('resultado');
+            texto.select();
+            document.execCommand("copy");
+        }
+    </script>
+
+</body>
+
+</html>
